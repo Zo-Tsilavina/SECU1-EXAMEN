@@ -50,28 +50,22 @@ form.addEventListener("submit", async (event) => {
 
 async function resolveCaptcha() {
   return new Promise((resolve, reject) => {
-    const interval = setInterval(() => {
-      if (window.AWSCaptcha) {
-        clearInterval(interval);
-        captchaResolver = window.AWSCaptcha.load({
-          captchaId: "b82b1763d1c3",
-          onSuccess: function () {
-            alert("CAPTCHA solved successfully!");
-            resolve();
-          },
-          onError: function (err) {
-            alert("Error solving CAPTCHA. Please try again.");
-            console.error("CAPTCHA Error:", err);
-            reject(err);
-          },
-        });
-      }
-    }, 500);
-
-    setTimeout(() => {
-      clearInterval(interval);
-      alert("CAPTCHA script failed to initialize.");
-      reject("CAPTCHA script failed to initialize.");
-    }, 10000);
+    if (window.AWSCaptcha) {
+      captchaResolver = window.AWSCaptcha.load({
+        captchaId: "b82b1763d1c3",
+        onSuccess: function () {
+          alert("CAPTCHA solved successfully!");
+          resolve();
+        },
+        onError: function (err) {
+          alert("Error solving CAPTCHA. Please try again.");
+          console.error("CAPTCHA Error:", err);
+          reject(err);
+        },
+      });
+    } else {
+      alert("CAPTCHA script not loaded. Please check the integration.");
+      reject("CAPTCHA script not loaded.");
+    }
   });
 }
